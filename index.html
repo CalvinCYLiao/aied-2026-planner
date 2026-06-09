@@ -13,6 +13,26 @@
 </head>
 <body>
 
+  <!-- Password Protection Overlay -->
+  <div id="password-overlay" class="password-overlay">
+    <div class="password-card">
+      <div class="password-brand">
+        <div class="brand-badge">AIED 2026</div>
+        <h2>Personal Planner</h2>
+        <p>CHANGYEN LIAO</p>
+      </div>
+      <p class="password-prompt-text">請輸入密碼以解鎖大會日程規劃器</p>
+      <form id="password-form" onsubmit="checkPassword(event)">
+        <div class="password-input-wrapper">
+          <input type="password" id="app-password" placeholder="輸入密碼..." autocomplete="current-password" required>
+          <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()"><i class="fa-regular fa-eye"></i></button>
+        </div>
+        <div id="password-error" class="password-error-msg"></div>
+        <button type="submit" class="btn btn-primary password-submit-btn"><i class="fa-solid fa-lock-open"></i> 解鎖大會日程</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Sidebar Navigation -->
   <aside class="sidebar">
     <div class="sidebar-brand">

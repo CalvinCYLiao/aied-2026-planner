@@ -1059,6 +1059,124 @@ main.main-content {
   }
 }
 
+/* Password Overlay Styling */
+.password-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 11, 16, 0.94);
+  backdrop-filter: blur(25px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.password-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.password-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  padding: 35px 30px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(139, 92, 246, 0.22);
+  animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(16px);
+}
+@keyframes scaleIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.password-brand {
+  margin-bottom: 20px;
+}
+.password-brand h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  margin-top: 6px;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.password-brand p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+.password-prompt-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+}
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 12px;
+}
+.password-input-wrapper input {
+  width: 100%;
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 10px !important;
+  padding: 12px 45px 12px 14px !important;
+  color: var(--text-primary) !important;
+  font-size: 1rem !important;
+  outline: none !important;
+  transition: var(--transition) !important;
+}
+.password-input-wrapper input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--border-glow) !important;
+}
+.password-toggle-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+.password-toggle-btn:hover {
+  color: var(--color-secondary);
+}
+.password-error-msg {
+  color: var(--color-danger);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  min-height: 18px;
+}
+.password-error-msg.shake {
+  animation: shake 0.25s ease 2;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.password-submit-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 12px !important;
+  font-size: 0.95rem !important;
+  border-radius: 10px !important;
+}
+
 /* Printing styles */
 @media print {
   body {

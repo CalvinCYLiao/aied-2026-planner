@@ -4672,6 +4672,54 @@ const sessionDetailsData = {
   }
 };
 
+// Password protection logic
+function checkSessionUnlock() {
+  const isUnlocked = sessionStorage.getItem('aied_app_unlocked') === 'true';
+  const overlay = document.getElementById("password-overlay");
+  if (isUnlocked && overlay) {
+    overlay.classList.add("hidden");
+  }
+}
+
+window.checkPassword = function(e) {
+  e.preventDefault();
+  const passwordInput = document.getElementById("app-password");
+  const errorEl = document.getElementById("password-error");
+  if (!passwordInput || !errorEl) return;
+  
+  const value = passwordInput.value.trim();
+  if (value === "0112") {
+    sessionStorage.setItem('aied_app_unlocked', 'true');
+    const overlay = document.getElementById("password-overlay");
+    if (overlay) overlay.classList.add("hidden");
+    errorEl.textContent = "";
+    errorEl.classList.remove("shake");
+  } else {
+    errorEl.textContent = "密碼錯誤，請重新輸入！ (Incorrect password)";
+    passwordInput.value = "";
+    passwordInput.focus();
+    
+    // Trigger CSS shake animation
+    errorEl.classList.remove("shake");
+    void errorEl.offsetWidth; // trigger reflow
+    errorEl.classList.add("shake");
+  }
+};
+
+window.togglePasswordVisibility = function() {
+  const input = document.getElementById("app-password");
+  const btnIcon = document.querySelector(".password-toggle-btn i");
+  if (!input || !btnIcon) return;
+  
+  if (input.type === "password") {
+    input.type = "text";
+    btnIcon.className = "fa-regular fa-eye-slash";
+  } else {
+    input.type = "password";
+    btnIcon.className = "fa-regular fa-eye";
+  }
+};
+
 // Default State for Flights, Hotels, and Checklists
 const defaultHotel = {
   name: "COEX K-residence 2 코엑스, 삼성역, 大峙, 蠶室",
@@ -4763,6 +4811,7 @@ allPapers.forEach(p => {
 
 // 1. Initial Load & Setup
 window.onload = function() {
+  checkSessionUnlock();
   initCountdown();
   initHotelForm();
   renderDayFilters();
