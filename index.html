@@ -487,83 +487,137 @@
     <!-- TAB 6: SEOUL TRAVEL GUIDE -->
     <section id="tab-guide" class="tab-content">
       <div class="grid-2col">
-        <!-- Essential Apps & Guide Cards -->
-        <div class="card card-accent-purple">
-          <h2 class="card-title">
-            <i class="fa-solid fa-mobile-screen-button"></i> 韓國自助旅行必備 App
-          </h2>
-          <div class="guide-accordion">
-            <div class="guide-section">
-              <h3><i class="fa-solid fa-map"></i> Naver Map / KakaoMap</h3>
-              <p>在韓國，Google Maps 的導航功能受到限制。請務必安裝 Naver Map 或 KakaoMap，這兩款支援繁體中文/英文，查路線、公車地鐵極度精準。</p>
+        <!-- Column 1: Apps & Practical Guide -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="card card-accent-purple">
+            <h2 class="card-title">
+              <i class="fa-solid fa-mobile-screen-button"></i> 韓國自助旅行必備 App
+            </h2>
+            <div class="guide-accordion">
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-map"></i> Naver Map / KakaoMap</h3>
+                <p>在韓國，Google Maps 的導航功能受到限制。請務必安裝 Naver Map 或 KakaoMap，這兩款支援繁體中文/英文，查路線、公車地鐵極度精準。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-taxi"></i> Kakao T</h3>
+                <p>韓國的計程車預約軟體，支援綁定海外信用卡，不怕語言不通與司機溝通，直接輸入目的地，系統會預估車資並自動扣款。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-language"></i> Papago</h3>
+                <p>Naver 開發的韓語翻譯神器，語音與拍照翻譯精準度比 Google 翻譯高出許多，特別是菜單與路標翻譯。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-wallet"></i> T-money 交通卡</h3>
+                <p>抵達機場後可直接在便利商店（CU, GS25）購買 T-money 卡並加值（需現金韓元），用於搭乘地鐵、公車、計程車。</p>
+              </div>
             </div>
-            <div class="guide-section">
-              <h3><i class="fa-solid fa-taxi"></i> Kakao T</h3>
-              <p>韓國的計程車預約軟體，支援綁定海外信用卡，不怕語言不通與司機溝通，直接輸入目的地，系統會預估車資並自動扣款。</p>
-            </div>
-            <div class="guide-section">
-              <h3><i class="fa-solid fa-language"></i> Papago</h3>
-              <p>Naver 開發的韓語翻譯神器，語音與拍照翻譯精準度比 Google 翻譯高出許多，特別是菜單與路標翻譯。</p>
-            </div>
-            <div class="guide-section">
-              <h3><i class="fa-solid fa-wallet"></i> T-money 交通卡</h3>
-              <p>抵達機場後可直接在便利商店（CU, GS25）購買 T-money 卡並加值（需現金韓元），用於搭乘地鐵、公車、計程車。</p>
+          </div>
+
+          <!-- Airport & Practical Travel Info -->
+          <div class="card card-accent-purple">
+            <h2 class="card-title">
+              <i class="fa-solid fa-plane-arrival"></i> 機場往返與實用旅行指南
+            </h2>
+            <div class="guide-accordion">
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-bus"></i> 機場巴士 (6006路)</h3>
+                <p>從仁川機場搭乘 6006 號機場快線巴士可直達 COEX (三成站/國際大飯店)，車程約 70-80 分鐘，單程票價為 17,000 韓元，十分便利。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-train"></i> 機場鐵路 AREX</h3>
+                <p>可搭乘 AREX 直達快線至「首爾站」，再轉乘地鐵 4 號線至「東大門歷史文化公園站」轉 2 號線至「三成站」，約 90 分鐘。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-bolt"></i> 電壓與轉接頭</h3>
+                <p>韓國電壓為 220V，插頭為雙孔圓頭 (Type C / Type F)。建議準備萬國轉接頭與隨身延長線充電使用。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-phone"></i> 旅遊支援電話</h3>
+                <p>韓國觀光公社 24 小時熱線：撥打 <strong>1330</strong> (支援繁體中文服務)。緊急救援/救護車：撥打 <strong>119</strong>。</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Korean Phrases & COEX Info -->
-        <div class="card card-accent-cyan">
-          <h2 class="card-title">
-            <i class="fa-solid fa-location-dot"></i> 研討會場地 COEX Center 資訊
-          </h2>
-          <div style="font-size: 0.95rem; margin-bottom: 20px;">
-            <p style="margin-bottom: 10px;">
-              <strong>📍 地址：</strong> 韓國首爾特別市江南區永東大路 513 (COEX)
-            </p>
-            <p style="margin-bottom: 10px;">
-              <strong>🚇 地鐵交通：</strong>
-              <br>1. 首爾地鐵 <strong>2 號線</strong> - 三成站 (Samseong) 5、6號出口直通 COEX Mall。
-              <br>2. 首爾地鐵 <strong>9 號線</strong> - 奉恩寺站 (Bongeunsa) 7號出口直通。
-            </p>
-            <p>
-              <strong>🛍️ 周邊環境：</strong> COEX 內部有全亞洲最大的地下購物中心 Starfield COEX Mall，包含著名的「星空圖書館」，餐飲選擇極多，生活機能非常發達。
-            </p>
+        <!-- Column 2: COEX Info, Phrases, Attractions -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="card card-accent-cyan">
+            <h2 class="card-title">
+              <i class="fa-solid fa-location-dot"></i> 研討會場地 COEX Center 資訊
+            </h2>
+            <div style="font-size: 0.95rem; margin-bottom: 20px;">
+              <p style="margin-bottom: 10px;">
+                <strong>📍 地址：</strong> 韓國首爾特別市江南區永東大路 513 (COEX)
+              </p>
+              <p style="margin-bottom: 10px;">
+                <strong>🚇 地鐵交通：</strong>
+                <br>1. 首爾地鐵 <strong>2 號線</strong> - 三成站 (Samseong) 5、6號出口直通 COEX Mall。
+                <br>2. 首爾地鐵 <strong>9 號線</strong> - 奉恩寺站 (Bongeunsa) 7號出口直通。
+              </p>
+              <p>
+                <strong>🛍️ 周邊環境：</strong> COEX 內部有全亞洲最大的地下購物中心 Starfield COEX Mall，包含著名的「星空圖書館」，餐飲選擇極多，生活機能非常發達。
+              </p>
+            </div>
+
+            <h2 class="card-title">
+              <i class="fa-solid fa-comments"></i> 實用旅行韓語
+            </h2>
+            <div class="phrase-grid">
+              <div class="phrase-card">
+                <div class="phrase-kr">안녕하세요</div>
+                <div class="phrase-rom">An-nyeong-ha-se-yo</div>
+                <div class="phrase-en">您好</div>
+              </div>
+              <div class="phrase-card">
+                <div class="phrase-kr">감사합니다</div>
+                <div class="phrase-rom">Gam-sa-ham-ni-da</div>
+                <div class="phrase-en">謝謝</div>
+              </div>
+              <div class="phrase-card">
+                <div class="phrase-kr">여기로 가주세요</div>
+                <div class="phrase-rom">Yeo-gi-ro ga-ju-se-yo</div>
+                <div class="phrase-en">請帶我去這裡 (對司機說)</div>
+              </div>
+              <div class="phrase-card">
+                <div class="phrase-kr">이거 얼마예요?</div>
+                <div class="phrase-rom">I-geo ol-ma-ye-yo?</div>
+                <div class="phrase-en">這個多少錢？</div>
+              </div>
+              <div class="phrase-card">
+                <div class="phrase-kr">화장실 어디예요?</div>
+                <div class="phrase-rom">Hwa-jang-sil eo-di-ye-yo?</div>
+                <div class="phrase-en">廁所在哪裡？</div>
+              </div>
+              <div class="phrase-card">
+                <div class="phrase-kr">카드 돼요?</div>
+                <div class="phrase-rom">Ka-deu dwae-yo?</div>
+                <div class="phrase-en">可以刷卡嗎？</div>
+              </div>
+            </div>
           </div>
 
-          <h2 class="card-title">
-            <i class="fa-solid fa-comments"></i> 實用旅行韓語
-          </h2>
-          <div class="phrase-grid">
-            <div class="phrase-card">
-              <div class="phrase-kr">안녕하세요</div>
-              <div class="phrase-rom">An-nyeong-ha-se-yo</div>
-              <div class="phrase-en">您好</div>
-            </div>
-            <div class="phrase-card">
-              <div class="phrase-kr">감사합니다</div>
-              <div class="phrase-rom">Gam-sa-ham-ni-da</div>
-              <div class="phrase-en">謝謝</div>
-            </div>
-            <div class="phrase-card">
-              <div class="phrase-kr">여기로 가주세요</div>
-              <div class="phrase-rom">Yeo-gi-ro ga-ju-se-yo</div>
-              <div class="phrase-en">請帶我去這裡 (對司機說)</div>
-            </div>
-            <div class="phrase-card">
-              <div class="phrase-kr">이거 얼마예요?</div>
-              <div class="phrase-rom">I-geo ol-ma-ye-yo?</div>
-              <div class="phrase-en">這個多少錢？</div>
-            </div>
-            <div class="phrase-card">
-              <div class="phrase-kr">화장실 어디예요?</div>
-              <div class="phrase-rom">Hwa-jang-sil eo-di-ye-yo?</div>
-              <div class="phrase-en">廁所在哪裡？</div>
-            </div>
-            <div class="phrase-card">
-              <div class="phrase-kr">카드 돼요?</div>
-              <div class="phrase-rom">Ka-deu dwae-yo?</div>
-              <div class="phrase-en">可以刷卡嗎？</div>
+          <!-- Nearby Attractions & Food Info -->
+          <div class="card card-accent-cyan">
+            <h2 class="card-title">
+              <i class="fa-solid fa-utensils"></i> 周邊景點與在地美食推薦
+            </h2>
+            <div class="guide-accordion">
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-book-open"></i> 星空圖書館 (Starfield Library)</h3>
+                <p>位於 COEX Mall 正中央，高達數層樓的巨型木質書牆與極具透光感的天頂光影，是首爾最吸睛的打卡熱點，完全免費參觀。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-gopuran"></i> 千年古剎 奉恩寺 (Bongeunsa)</h3>
+                <p>新羅時期的千年歷史名寺，正對 COEX 北側入口。高大的彌勒大佛立像宏偉精美，是鋼筋水泥江南都市中的一片清幽靜土。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-bridge"></i> 盤浦漢江公園 (彩虹噴泉秀)</h3>
+                <p>搭乘地鐵至高速巴士客運站步行前往。這裡有世界最長的大橋彩虹噴泉秀，也是坐在江畔野餐、品嚐韓式外送炸雞與漢江泡麵的經典去處。</p>
+              </div>
+              <div class="guide-section">
+                <h3><i class="fa-solid fa-bowl-food"></i> 韓式在地美食指引</h3>
+                <p>COEX Mall 內擁有超多美食街（包含雪濃湯、人蔘雞、辣炒年糕）。若想吃正宗韓式烤肉、豬骨湯、春川辣炒雞等排隊名店，多集中在三成站周邊與地鐵 2 號線宣陵/江南站一帶。</p>
+              </div>
             </div>
           </div>
         </div>
