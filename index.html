@@ -261,6 +261,18 @@
             </div>
           </div>
 
+          <!-- Institution Collaborator Finder Card -->
+          <div class="card card-accent-cyan" style="display: flex; flex-direction: column; max-height: 280px; padding: 18px 20px;">
+            <h2 class="card-title" style="margin-bottom: 8px; font-size: 1.15rem; padding-bottom: 8px;"><i class="fa-solid fa-graduation-cap"></i> 發表機構與學術交流 (Institutions)</h2>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+              <span>點擊熱門機構查找發表：</span>
+              <button id="btn-reset-institution" class="btn btn-secondary" style="padding: 1px 6px; font-size: 0.68rem; border-radius: 4px; display: none;" onclick="clearInstitutionFilter()">重設</button>
+            </div>
+            <div id="institutions-list-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
+              <!-- Institutions loaded dynamically -->
+            </div>
+          </div>
+
           <!-- Interest Subscription -->
           <div class="card">
             <h2 class="card-title"><i class="fa-solid fa-square-rss"></i> 個人興趣訂閱</h2>
@@ -552,6 +564,48 @@
               <div class="phrase-kr">카드 돼요?</div>
               <div class="phrase-rom">Ka-deu dwae-yo?</div>
               <div class="phrase-en">可以刷卡嗎？</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COEX Venue Finder -->
+      <div class="card card-accent-purple" style="margin-top: 25px;">
+        <h2 class="card-title"><i class="fa-solid fa-map-location-dot"></i> COEX 展覽會議廳地圖與地鐵出口指引 (Interactive Venue Finder)</h2>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 25px; align-items: start;">
+          <!-- Left: Metro exit directions & Floor selector -->
+          <div>
+            <h3 style="color: var(--color-secondary); font-size: 1rem; margin-bottom: 12px;"><i class="fa-solid fa-train-subway"></i> 地鐵出口指引</h3>
+            <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; list-style-type: none; padding-left: 0;">
+              <li style="margin-bottom: 12px;">
+                <strong style="color: white;">🚇 2號線 三成站 (Samseong) 出口 5/6：</strong>
+                <br>直通 COEX Mall 地下一樓。建議前往：<strong style="color: var(--color-warning);">1F 會議廳 (Rooms 103-105)</strong>、<strong style="color: var(--color-warning);">3F Auditorium 禮堂</strong>、以及南側會議室。
+              </li>
+              <li>
+                <strong style="color: white;">🚇 9號線 奉恩寺站 (Bongeunsa) 出口 7：</strong>
+                <br>直通 COEX 北側廣場。建議前往：<strong style="color: var(--color-warning);">2F 北側會議廳 (Rooms 201-211)</strong>、以及北側展覽館。
+              </li>
+            </ul>
+            
+            <h3 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 12px;"><i class="fa-solid fa-layer-group"></i> 樓層地圖切換</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;" id="coex-floor-selectors">
+              <button class="day-btn active" id="btn-floor-1f" onclick="switchFloorMap('1F')" style="justify-content: center; text-align: center; font-size: 0.8rem; width: 100%;">1F 展覽大廳 (Rooms 103-105)</button>
+              <button class="day-btn" id="btn-floor-2f" onclick="switchFloorMap('2F')" style="justify-content: center; text-align: center; font-size: 0.8rem; width: 100%;">2F 北側會議廳 (Rooms 201-208)</button>
+              <button class="day-btn" id="btn-floor-3f" onclick="switchFloorMap('3F')" style="justify-content: center; text-align: center; font-size: 0.8rem; width: 100%;">3F 南側會議廳 & 禮堂 (Rooms 300-308 / Auditorium)</button>
+              <button class="day-btn" id="btn-floor-4f" onclick="switchFloorMap('4F')" style="justify-content: center; text-align: center; font-size: 0.8rem; width: 100%;">4F 南側會議廳 (Rooms 401-402)</button>
+            </div>
+          </div>
+          
+          <!-- Right: Visual Floor Map Diagram -->
+          <div style="background: rgba(0,0,0,0.20); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; min-height: 350px;">
+            <div id="floor-map-header" style="font-family: var(--font-heading); font-weight: 700; color: var(--color-secondary); margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px dashed rgba(255,255,255,0.06); padding-bottom: 8px;">
+              1F 樓層配置 - 會議室 Rooms 103-105 (南側 Grand Ballroom 區域)
+            </div>
+            <div id="floor-map-visual" style="flex: 1; display: flex; justify-content: center; align-items: center;">
+              <!-- CSS-drawn layouts of floors will be rendered here dynamically -->
+            </div>
+            <div style="margin-top: 15px; font-size: 0.78rem; color: var(--text-muted); text-align: center; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 10px;">
+              💡 提示：點擊左側樓層按鈕可以查看不同樓層的教室位置。您的發表場次位於 <strong style="color: var(--color-warning);">Room 104 (1F)</strong>。
             </div>
           </div>
         </div>

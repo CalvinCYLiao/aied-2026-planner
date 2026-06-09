@@ -4758,6 +4758,7 @@ let expandedSessions = []; // Array of session header titles that are expanded
 // Dashboard filter state
 let selectedDashboardTopic = null;
 let selectedDashboardCountry = null;
+let selectedDashboardInstitution = null;
 let dashboardSearchQuery = "";
 let worldMapInstance = null;
 let mapInitialized = false;
@@ -4819,6 +4820,7 @@ window.onload = function() {
   renderChecklist();
   initDashboard();
   renderItinerary();
+  switchFloorMap('1F');
 };
 
 // 2. Countdown Timer
@@ -5144,11 +5146,77 @@ function updateProgress() {
 function initDashboard() {
   updateDashboardStats();
   renderDashboardTopics();
+  renderDashboardInstitutions();
   renderQuickKeywords();
   document.getElementById("interest-keywords").value = customInterestKeywords.join(", ");
   updateRecommendations();
   renderDashboardPapers();
 }
+
+function renderDashboardInstitutions() {
+  const container = document.getElementById("institutions-list-container");
+  if (!container) return;
+  container.innerHTML = "";
+  
+  const counts = {};
+  allPapers.forEach(p => {
+    if (p.institution && p.institution !== "未知機構 (Unknown)" && p.institution !== "Unknown") {
+      counts[p.institution] = (counts[p.institution] || 0) + 1;
+    }
+  });
+  
+  const sortedInsts = Object.keys(counts).sort((a, b) => {
+    if (counts[b] !== counts[a]) {
+      return counts[b] - counts[a];
+    }
+    return a.localeCompare(b);
+  });
+  
+  if (sortedInsts.length === 0) {
+    container.innerHTML = `<div style="text-align:center;color:var(--text-secondary);font-size:0.8rem;padding:20px;">無機構資訊</div>`;
+    return;
+  }
+  
+  sortedInsts.forEach(inst => {
+    const count = counts[inst];
+    const item = document.createElement("div");
+    const isActive = selectedDashboardInstitution === inst;
+    item.className = `inst-item ${isActive ? 'active' : ''}`;
+    item.onclick = () => {
+      if (selectedDashboardInstitution === inst) {
+        selectedDashboardInstitution = null;
+      } else {
+        selectedDashboardInstitution = inst;
+      }
+      
+      document.querySelectorAll(".inst-item").forEach(el => el.classList.remove("active"));
+      if (selectedDashboardInstitution) {
+        item.classList.add("active");
+      }
+      
+      const resetBtn = document.getElementById("btn-reset-institution");
+      if (resetBtn) {
+        resetBtn.style.display = selectedDashboardInstitution ? "inline-block" : "none";
+      }
+      
+      renderDashboardPapers();
+    };
+    
+    item.innerHTML = `
+      <span class="inst-item-name" title="${inst}">${inst}</span>
+      <span class="inst-item-count">${count}</span>
+    `;
+    container.appendChild(item);
+  });
+}
+
+window.clearInstitutionFilter = function() {
+  selectedDashboardInstitution = null;
+  document.querySelectorAll(".inst-item").forEach(el => el.classList.remove("active"));
+  const resetBtn = document.getElementById("btn-reset-institution");
+  if (resetBtn) resetBtn.style.display = "none";
+  renderDashboardPapers();
+};
 
 function updateDashboardStats() {
   document.getElementById("stat-total-papers").textContent = allPapers.length;
@@ -5579,6 +5647,7 @@ window.renderDashboardPapers = function() {
   const filtered = allPapers.filter(p => {
     const matchesTopic = selectedDashboardTopic === null || p.topic === selectedDashboardTopic;
     const matchesCountry = selectedDashboardCountry === null || p.country === selectedDashboardCountry;
+    const matchesInstitution = selectedDashboardInstitution === null || p.institution === selectedDashboardInstitution;
     
     const query = dashboardSearchQuery.trim().toLowerCase();
     const matchesSearch = !query || 
@@ -5590,7 +5659,7 @@ window.renderDashboardPapers = function() {
       (p.country_name && p.country_name.toLowerCase().includes(query)) ||
       (p.institution && p.institution.toLowerCase().includes(query));
       
-    return matchesTopic && matchesCountry && matchesSearch;
+    return matchesTopic && matchesCountry && matchesInstitution && matchesSearch;
   });
   
   let filterText = `顯示符合的 ${filtered.length} 篇論文`;
@@ -5600,10 +5669,13 @@ window.renderDashboardPapers = function() {
     const cName = allPapers.find(p => p.country === selectedDashboardCountry)?.country_name || selectedDashboardCountry;
     filterDetails.push(`地區: ${cName}`);
   }
+  if (selectedDashboardInstitution) {
+    filterDetails.push(`機構: ${selectedDashboardInstitution}`);
+  }
   if (filterDetails.length > 0) {
     filterText += ` (${filterDetails.join(' | ')})`;
   } else {
-    filterText += ` (主題: 全部 | 地區: 全部)`;
+    filterText += ` (主題: 全部 | 地區: 全部 | 機構: 全部)`;
   }
   document.getElementById("filtered-papers-count").textContent = filterText + '：';
   
@@ -5658,6 +5730,7 @@ window.searchPapers = function() {
 window.clearDashboardFilters = function() {
   selectedDashboardTopic = null;
   selectedDashboardCountry = null;
+  selectedDashboardInstitution = null;
   dashboardSearchQuery = "";
   document.getElementById("dashboard-search-input").value = "";
   
@@ -5672,6 +5745,11 @@ window.clearDashboardFilters = function() {
   }
   updateMapSelectionStatus();
   renderTopCountriesList();
+  
+  // Clear institution active state
+  document.querySelectorAll(".inst-item").forEach(el => el.classList.remove("active"));
+  const resetInstBtn = document.getElementById("btn-reset-institution");
+  if (resetInstBtn) resetInstBtn.style.display = "none";
   
   renderDashboardPapers();
 };
@@ -5954,4 +6032,106 @@ window.renderItinerary = function() {
       papersContainer.appendChild(card);
     });
   }
+};
+
+window.switchFloorMap = function(floor) {
+  // Update button active states
+  const selectors = document.querySelectorAll("#coex-floor-selectors button");
+  selectors.forEach(btn => btn.classList.remove("active"));
+  
+  const activeBtn = document.getElementById(`btn-floor-${floor.toLowerCase()}`);
+  if (activeBtn) activeBtn.classList.add("active");
+  
+  const header = document.getElementById("floor-map-header");
+  const visual = document.getElementById("floor-map-visual");
+  if (!header || !visual) return;
+  
+  let headerText = "";
+  let gridHtml = "";
+  
+  if (floor === '1F') {
+    headerText = "1F 樓層配置 - 會議室 Rooms 103-105 (南側 Grand Ballroom 區域)";
+    gridHtml = `
+      <div class="floor-map-grid">
+        <div class="floor-map-room" style="grid-column: 1 / 4; grid-row: 1 / 5;">Room 103</div>
+        <div class="floor-map-room highlight-star" style="grid-column: 4 / 7; grid-row: 1 / 5;">
+          <span>Room 104</span>
+          <span style="font-size: 0.68rem; opacity: 0.85; margin-top: 2px;">我的發表 (My Talk)</span>
+        </div>
+        <div class="floor-map-room" style="grid-column: 7 / 10; grid-row: 1 / 5;">Room 105</div>
+        <div class="floor-map-lobby" style="grid-column: 10 / 13; grid-row: 1 / 6;">
+          <i class="fa-solid fa-hotel"></i><br>登記大廳 (Lobby)
+        </div>
+        <div class="floor-map-hall" style="grid-column: 1 / 10; grid-row: 5 / 6;">走廊 (Grand Corridor)</div>
+        <div class="floor-map-escalator" style="grid-column: 3 / 6; grid-row: 7 / 9;">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="transform: rotate(90deg);"></i> 手扶梯 (To B1/2F)
+        </div>
+        <div class="floor-map-hall" style="grid-column: 7 / 10; grid-row: 7 / 9;">洗手間 (Restrooms)</div>
+        <div class="floor-map-lobby" style="grid-column: 10 / 13; grid-row: 6 / 9; background: rgba(6, 182, 212, 0.15);">
+          <i class="fa-solid fa-train-subway"></i><br>南大門出口<br><span style="font-size: 0.65rem;">(捷運三成站直通 B1)</span>
+        </div>
+      </div>
+    `;
+  } else if (floor === '2F') {
+    headerText = "2F 樓層配置 - 北側會議廳 Rooms 201-208";
+    gridHtml = `
+      <div class="floor-map-grid">
+        <div class="floor-map-room" style="grid-column: 1 / 4; grid-row: 1 / 4;">Room 201</div>
+        <div class="floor-map-room" style="grid-column: 4 / 7; grid-row: 1 / 4;">Room 202</div>
+        <div class="floor-map-room" style="grid-column: 7 / 10; grid-row: 1 / 4;">Room 203</div>
+        <div class="floor-map-room" style="grid-column: 10 / 13; grid-row: 1 / 4;">Room 204</div>
+        <div class="floor-map-hall" style="grid-column: 1 / 13; grid-row: 4 / 5;">中央走廊 (Central Hallway)</div>
+        <div class="floor-map-room" style="grid-column: 1 / 4; grid-row: 5 / 8;">Room 205</div>
+        <div class="floor-map-room" style="grid-column: 4 / 7; grid-row: 5 / 8;">Room 206</div>
+        <div class="floor-map-room" style="grid-column: 7 / 10; grid-row: 5 / 8;">Room 207</div>
+        <div class="floor-map-room" style="grid-column: 10 / 13; grid-row: 5 / 8;">Room 208</div>
+        <div class="floor-map-lobby" style="grid-column: 1 / 5; grid-row: 8 / 9;">北側接待處</div>
+        <div class="floor-map-escalator" style="grid-column: 5 / 9; grid-row: 8 / 9;">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="transform: rotate(90deg);"></i> 手扶梯 (To 1F/3F)
+        </div>
+        <div class="floor-map-lobby" style="grid-column: 9 / 13; grid-row: 8 / 9; background: rgba(6, 182, 212, 0.15);">
+          <i class="fa-solid fa-train-subway"></i> 北廣場出口 <span style="font-size:0.65rem;">(接捷運奉恩寺站)</span>
+        </div>
+      </div>
+    `;
+  } else if (floor === '3F') {
+    headerText = "3F 樓層配置 - 南側會議廳 & 禮堂 (Rooms 300-308 / Auditorium)";
+    gridHtml = `
+      <div class="floor-map-grid">
+        <div class="floor-map-room" style="grid-column: 1 / 7; grid-row: 1 / 6; background: rgba(139, 92, 246, 0.18);">
+          <i class="fa-solid fa-landmark"></i><br>大禮堂 (Auditorium)<br><span style="font-size:0.7rem;">Keynote Main Hall</span>
+        </div>
+        <div class="floor-map-room" style="grid-column: 7 / 10; grid-row: 1 / 3;">Room 300</div>
+        <div class="floor-map-room" style="grid-column: 10 / 13; grid-row: 1 / 4;">Room 307</div>
+        <div class="floor-map-room" style="grid-column: 7 / 10; grid-row: 3 / 6;">Room 308</div>
+        <div class="floor-map-hall" style="grid-column: 1 / 13; grid-row: 6 / 7;">南側通道 (South Corridor)</div>
+        <div class="floor-map-lobby" style="grid-column: 1 / 7; grid-row: 7 / 9;">
+          禮堂大廳 (Auditorium Foyer)
+        </div>
+        <div class="floor-map-escalator" style="grid-column: 8 / 11; grid-row: 7 / 9;">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="transform: rotate(90deg);"></i> 手扶梯 (To 1F/4F)
+        </div>
+        <div class="floor-map-hall" style="grid-column: 11 / 13; grid-row: 7 / 9;">休息區</div>
+      </div>
+    `;
+  } else if (floor === '4F') {
+    headerText = "4F 樓層配置 - 南側會議廳 (Rooms 401-402)";
+    gridHtml = `
+      <div class="floor-map-grid">
+        <div class="floor-map-room" style="grid-column: 1 / 6; grid-row: 1 / 5;">Room 401</div>
+        <div class="floor-map-room" style="grid-column: 6 / 11; grid-row: 1 / 5;">Room 402</div>
+        <div class="floor-map-lobby" style="grid-column: 11 / 13; grid-row: 1 / 8;">
+          電梯廳<br>(Elevators)
+        </div>
+        <div class="floor-map-hall" style="grid-column: 1 / 11; grid-row: 5 / 6;">通道 (Hallway)</div>
+        <div class="floor-map-escalator" style="grid-column: 4 / 8; grid-row: 7 / 9;">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="transform: rotate(90deg);"></i> 樓梯/手扶梯 (To 3F)
+        </div>
+        <div class="floor-map-hall" style="grid-column: 1 / 4; grid-row: 7 / 9;">洗手間</div>
+      </div>
+    `;
+  }
+  
+  header.textContent = headerText;
+  visual.innerHTML = gridHtml;
 };
