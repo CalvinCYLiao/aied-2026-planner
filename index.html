@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIED 2026 個人大會日程與旅行規劃器</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- jsVectorMap for Interactive World Map -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/js/jsvectormap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-badge">AIED 2026</div>
+      <h1>Personal Planner</h1>
+      <p class="traveler-name">廖長彥 (CHANGYEN LIAO)</p>
+      <span class="badge-location">
+        <i class="fa-solid fa-location-dot"></i> 韓國首爾 · COEX 中心 (Festival of Learning)
+      </span>
+    </div>
+    
+    <!-- Countdown Timer -->
+    <div class="sidebar-countdown">
+      <div class="countdown-label"><i class="fa-solid fa-hourglass-half"></i> 大會正式倒數 (KST)</div>
+      <div class="countdown-container">
+        <div class="countdown-item">
+          <span id="cd-days" class="countdown-value">00</span>
+          <span class="countdown-label">天</span>
+        </div>
+        <div class="countdown-item">
+          <span id="cd-hours" class="countdown-value">00</span>
+          <span class="countdown-label">時</span>
+        </div>
+        <div class="countdown-item">
+          <span id="cd-mins" class="countdown-value">00</span>
+          <span class="countdown-label">分</span>
+        </div>
+        <div class="countdown-item">
+          <span id="cd-secs" class="countdown-value">00</span>
+          <span class="countdown-label">秒</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-schedule')">
+        <i class="fa-regular fa-calendar-days"></i> 日程規劃器
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-my-itinerary')">
+        <i class="fa-solid fa-star"></i> 我的行程
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-dashboard')">
+        <i class="fa-solid fa-chart-simple"></i> 論文主題儀表板
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-travel')">
+        <i class="fa-solid fa-plane"></i> 交通與機票
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-checklist')">
+        <i class="fa-solid fa-list-check"></i> 準備清單
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-guide')">
+        <i class="fa-solid fa-map-location-dot"></i> 首爾旅遊指南
+      </button>
+    </nav>
+    
+    <!-- Travel Summary Widget -->
+    <div class="sidebar-travel-summary">
+      <div class="summary-title"><i class="fa-solid fa-suitcase-rolling"></i> 行程概覽</div>
+      <div class="summary-item"><i class="fa-solid fa-plane-departure"></i> 6/28 BR2148 ✈️ 7/4 BR169</div>
+      <div class="summary-item"><i class="fa-solid fa-hotel"></i> COEX K-residence 2</div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    
+    <!-- TAB 1: SCHEDULE BUILDER -->
+    <section id="tab-schedule" class="tab-content active">
+      <div class="schedule-layout-2col">
+        <!-- Left Column: Main Schedule Table -->
+        <div class="schedule-main-area">
+          <div class="schedule-controls">
+            <div class="day-filters" id="day-filters-container">
+              <!-- Days will be loaded dynamically via JS -->
+            </div>
+            
+            <div class="track-filters">
+              <select id="filter-track" class="select-filter" onchange="filterSessions()">
+                <option value="all">所有類別 (All)</option>
+                <option value="AIED">AIED 論文</option>
+                <option value="EDM">EDM 論文</option>
+                <option value="L@S">Learning @ Scale</option>
+                <option value="General">大會共同活動/主題演講</option>
+              </select>
+              
+              <label class="checkbox-toggle">
+                <input type="checkbox" id="filter-starred" onchange="filterSessions()"> 
+                <span>只顯示我標記的日程</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="schedule-table-container">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">標記</th>
+                  <th style="width: 120px;">時間</th>
+                  <th style="width: 180px;">會議廳 (Room)</th>
+                  <th style="width: 120px;">時段 (Session)</th>
+                  <th>課程/主題內容</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-tbody">
+                <!-- Sessions loaded dynamically via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Right Column: Goals and Stats Sidebar Preview -->
+        <div class="schedule-sidebar-area">
+          <!-- Presentation Card -->
+          <div class="card card-accent-warning" style="border: 1px solid var(--color-warning); background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(20, 22, 33, 0.65) 100%);">
+            <h2 class="card-title" style="color: var(--color-warning); border-bottom-color: rgba(245, 158, 11, 0.2); margin-bottom: 12px; font-size: 1.15rem;">
+              <i class="fa-solid fa-trophy"></i> 您的論文發表場次
+            </h2>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <strong>時段：</strong> 週一 (6/29) 10:45 - 12:00<br>
+              <strong>場次：</strong> Session 2 - AIED10 (TS)<br>
+              <strong>主題：</strong> AI-Driven Writing Support and Analytics<br>
+              <strong>教室：</strong> Room 104 (門牌 104)<br>
+              <div class="paper-meta-session" onclick="goToSession('AIED10 (TS)')" style="margin-top: 10px; background: rgba(245, 158, 11, 0.15); border-color: var(--color-warning); color: var(--color-warning); width: 100%; justify-content: center; font-size: 0.8rem; padding: 6px; border-radius: 6px;">
+                <i class="fa-solid fa-location-arrow"></i> 在日程表中展開定位
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Checklist Progress Card -->
+          <div class="card card-accent-purple" style="padding: 18px;">
+            <h2 class="card-title" style="font-size: 1.1rem; margin-bottom: 10px; padding-bottom: 8px;"><i class="fa-solid fa-list-check"></i> 行前準備進度</h2>
+            <div class="progress-container" style="margin-bottom: 0;">
+              <div class="progress-header" style="font-size: 0.8rem; margin-bottom: 4px;">
+                <span>已完成項目</span>
+                <span id="sidebar-progress-percent">0%</span>
+              </div>
+              <div class="progress-bar-wrapper" style="height: 6px;">
+                <div id="sidebar-progress-bar" class="progress-bar-fill"></div>
+              </div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">
+              請在「準備清單」分頁中勾選待辦事項，確保旅行與學術發表順利！
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MY ITINERARY -->
+    <section id="tab-my-itinerary" class="tab-content">
+      <div class="grid-2col" style="grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 25px;">
+        <!-- Left Column: Starred Sessions Timeline -->
+        <div class="card card-accent-purple" style="display: flex; flex-direction: column;">
+          <h2 class="card-title">
+            <i class="fa-solid fa-star" style="color: var(--color-warning);"></i> 預計前往聽的報告行程 (Planned Presentation Schedule)
+          </h2>
+          <div id="itinerary-sessions-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Right Column: Starred Papers & Print Button -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Print Card -->
+          <div class="card" style="text-align: center; border: 1px solid var(--border-glow); background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, rgba(20, 22, 33, 0.65) 100%);">
+            <h2 class="card-title" style="justify-content: center; margin-bottom: 12px;"><i class="fa-solid fa-print"></i> 行程列印與備份</h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 15px; line-height: 1.5;">
+              您可以將個人專屬行程匯出列印，或在瀏覽器中「另存為 PDF」以供隨身攜帶。
+            </p>
+            <button class="btn btn-primary" onclick="window.print()" style="width: 100%; justify-content: center; padding: 12px;">
+              <i class="fa-solid fa-file-pdf"></i> 列印 / 另存為 PDF
+            </button>
+          </div>
+
+          <!-- Starred Papers List -->
+          <div class="card card-accent-cyan" style="flex: 1; display: flex; flex-direction: column;">
+            <h2 class="card-title">
+              <i class="fa-solid fa-bookmark" style="color: var(--color-secondary);"></i> 追蹤的個別論文 (Starred Papers)
+            </h2>
+            <div id="itinerary-papers-container" class="papers-list" style="margin-top: 10px; overflow-y: auto; max-height: 500px; padding-right: 5px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PAPER TOPICS DASHBOARD -->
+    <section id="tab-dashboard" class="tab-content">
+      <div class="dashboard-3col">
+        
+        <!-- Column 1: Presenter highlight, Stats, Interest Subscription -->
+        <div class="dash-col" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Your Presentation Highlight -->
+          <div class="card" style="border: 1px solid var(--color-warning); background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(20, 22, 33, 0.65) 100%);">
+            <h2 class="card-title" style="color: var(--color-warning); border-bottom-color: rgba(245, 158, 11, 0.2); margin-bottom: 12px;">
+              <i class="fa-solid fa-trophy"></i> 您的論文發表場次
+            </h2>
+            <div style="font-size: 0.9rem; line-height: 1.6;">
+              <strong>時段：</strong> 週一 (6月29日) 10:45 - 12:00<br>
+              <strong>場次：</strong> Session 2 - AIED10 (TS)<br>
+              <strong>主題：</strong> AI-Driven Writing Support and Analytics<br>
+              <strong>教室：</strong> Room 104 (門牌 104)<br>
+              <div class="paper-meta-session" onclick="goToSession('AIED10 (TS)')" style="margin-top: 12px; background: rgba(245, 158, 11, 0.15); border-color: var(--color-warning); color: var(--color-warning); width: 100%; justify-content: center;">
+                <i class="fa-solid fa-location-arrow"></i> 立即在日程表中定位
+              </div>
+            </div>
+          </div>
+          
+          <!-- Stats Card -->
+          <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-chart-pie"></i> 論文統計資料</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; text-align: center;">
+              <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-secondary);" id="stat-total-papers">309</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">收錄論文</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-primary);" id="stat-starred-papers">0</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">標記論文</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interest Subscription -->
+          <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-square-rss"></i> 個人興趣訂閱</h2>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="interest-keywords" style="font-size: 0.75rem;">輸入興趣關鍵字 (如 writing, K-12)</label>
+              <input type="text" id="interest-keywords" placeholder="自訂關鍵字，多個以逗號隔開..." oninput="updateInterestKeywords()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none; width: 100%;">
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;" id="quick-keywords-container">
+              <!-- Quick tags will be loaded dynamically -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Column 2: Research Themes, Countries/Regions Filters -->
+        <div class="dash-col" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Themes List (Word Cloud) -->
+          <div class="card" style="display: flex; flex-direction: column; flex: 1; min-height: 260px;">
+            <h2 class="card-title" style="margin-bottom: 8px;"><i class="fa-solid fa-tags"></i> 研究主題主題雲 (Themes Word Cloud)</h2>
+            <div id="topics-list-container" class="word-cloud-container" style="flex: 1; overflow-y: auto; max-height: 280px; padding-right: 5px;">
+              <!-- Word cloud items generated dynamically via JS -->
+            </div>
+          </div>
+          
+          <!-- Regions Interactive Map Card -->
+          <div class="card" style="display: flex; flex-direction: column; flex: 1; min-height: 380px;">
+            <h2 class="card-title" style="margin-bottom: 8px;"><i class="fa-solid fa-globe"></i> 發表國家與地區分佈 (Regions Map)</h2>
+            <div id="regions-map-selection-status" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+              <span>載入地圖中...</span>
+              <button id="btn-reset-map" class="btn btn-secondary" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 4px; display: none;" onclick="clearMapSelection()"><i class="fa-solid fa-rotate-left"></i> 重設地圖</button>
+            </div>
+            <div id="regions-map-container" style="height: 220px; width: 100%; position: relative;"></div>
+            <div id="top-countries-list" style="margin-top: 14px; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; display: flex; flex-wrap: wrap; gap: 6px; max-height: 110px; overflow-y: auto; padding-right: 4px;">
+              <!-- Country items generated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: AI recommendations & Search Results -->
+        <div class="dash-col" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Smart Recommendations Card -->
+          <div class="card" style="border: 1px solid rgba(139, 92, 246, 0.25); background: linear-gradient(180deg, rgba(139, 92, 246, 0.04) 0%, rgba(20, 22, 33, 0.65) 100%);">
+            <h2 class="card-title" style="color: var(--color-primary); border-bottom-color: rgba(139, 92, 246, 0.15); margin-bottom: 12px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ 智慧論文推薦 (AI Recommendation)
+            </h2>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;" id="recommendation-reason">
+              基於您的興趣，為您推薦以下與您最相關的發表：
+            </div>
+            <div id="smart-recommendations-container" class="papers-list" style="max-height: 260px; overflow-y: auto; padding-right: 5px;">
+              <!-- Recommendations rendered dynamically -->
+            </div>
+          </div>
+          
+          <!-- Search & Full List -->
+          <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+            <h2 class="card-title" style="margin-bottom: 12px; padding-bottom: 10px;"><i class="fa-solid fa-magnifying-glass"></i> 論文搜尋與查找</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+              <input type="text" id="dashboard-search-input" placeholder="輸入論文標題、作者、地區或 ID..." oninput="searchPapers()" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none;">
+              <button class="btn btn-secondary" onclick="clearDashboardFilters()" style="padding: 10px 15px;"><i class="fa-solid fa-rotate-left"></i> 重設</button>
+            </div>
+            
+            <div style="margin-bottom: 8px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;" id="filtered-papers-count">
+              顯示 309 篇論文中符合的項目...
+            </div>
+            
+            <div id="dashboard-papers-container" class="papers-list" style="overflow-y: auto; max-height: 380px; padding-right: 5px; flex: 1;">
+              <!-- Paper items generated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- TAB 4: TRAVEL & FLIGHTS -->
+    <section id="tab-travel" class="tab-content">
+      <div class="grid-2col">
+        <!-- Flight Schedule Card -->
+        <div class="card card-accent-cyan">
+          <h2 class="card-title">
+            <i class="fa-solid fa-ticket"></i> 航班資訊 (BR / Asiana Airlines)
+          </h2>
+          
+          <!-- Outbound Flight -->
+          <h3 style="color: var(--color-secondary); margin-bottom: 15px;">去程：台北 (TPE) ➡️ 首爾 (ICN) — 6月28日 (週日)</h3>
+          <div class="flight-timeline">
+            <div class="flight-point">
+              <span class="flight-time-bold">12:25</span>
+              <div class="flight-airport">台灣桃園國際機場 (TPE) · 第二航廈 (T2)</div>
+            </div>
+            <div class="flight-point arrival">
+              <span class="flight-time-bold">15:55</span>
+              <div class="flight-airport">首爾仁川國際機場 (ICN) · 第二航廈 (T2)</div>
+            </div>
+          </div>
+          
+          <div class="flight-carrier">
+            <i class="fa-solid fa-plane-departure" style="color: var(--color-secondary);"></i>
+            <div>
+              <strong>長榮航空 BR2148</strong> (由 <strong>韓亞航空 Asiana Airlines</strong> 實際飛行)<br>
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">機型：波音 777-200LR | 艙等：經濟艙 V | 飛行時間：2小時30分</span>
+            </div>
+          </div>
+          
+          <hr style="border-color: rgba(255,255,255,0.05); margin: 25px 0;">
+
+          <!-- Inbound Flight -->
+          <h3 style="color: var(--color-primary); margin-bottom: 15px;">回程：首爾 (ICN) ➡️ 台北 (TPE) — 7月4日 (週六)</h3>
+          <div class="flight-timeline">
+            <div class="flight-point">
+              <span class="flight-time-bold">12:00</span>
+              <div class="flight-airport">首爾仁川國際機場 (ICN) · 第一航廈 (T1)</div>
+            </div>
+            <div class="flight-point arrival">
+              <span class="flight-time-bold">13:35</span>
+              <div class="flight-airport">台灣桃園國際機場 (TPE) · 第二航廈 (T2)</div>
+            </div>
+          </div>
+          
+          <div class="flight-carrier">
+            <i class="fa-solid fa-plane-arrival" style="color: var(--color-primary);"></i>
+            <div>
+              <strong>長榮航空 BR169</strong><br>
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">機型：波音 787-10 | 艙等：經濟艙 V | 飛行時間：2小時35分</span>
+            </div>
+          </div>
+          
+          <div class="flight-info-grid">
+            <div class="flight-meta-item">
+              <div class="flight-meta-label">旅客姓名</div>
+              <div class="flight-meta-val">LIAO / CHANGYEN</div>
+            </div>
+            <div class="flight-meta-item">
+              <div class="flight-meta-label">票種等級</div>
+              <div class="flight-meta-val">男成人票 / 經濟艙 V</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Luggage and Hotel Info Card -->
+        <div class="card card-accent-purple">
+          <h2 class="card-title">
+            <i class="fa-solid fa-suitcase-rolling"></i> 行李與票價規定
+          </h2>
+          <div style="font-size: 0.95rem; margin-bottom: 25px;">
+            <p style="margin-bottom: 10px;">
+              <i class="fa-solid fa-circle-check" style="color: var(--color-success);"></i> 
+              <strong>託運行李額度：</strong> 1 件 (限重 23 公斤 / 50 磅)
+            </p>
+            <p style="margin-bottom: 10px;">
+              <i class="fa-solid fa-circle-check" style="color: var(--color-success);"></i> 
+              <strong>隨身行李額度：</strong> 1 件 (限重 7 公斤) + 1 件個人隨身小包
+            </p>
+            <p>
+              <i class="fa-solid fa-circle-info" style="color: var(--color-secondary);"></i> 
+              <strong>票價退改簽規定：</strong> 經濟艙 V 艙，退票與改期可能收取手續費，請依航空公司官方規定為準。
+            </p>
+          </div>
+
+          <h2 class="card-title">
+            <i class="fa-solid fa-hotel"></i> 住宿飯店資訊 (可編輯)
+          </h2>
+          <form id="hotel-form" onsubmit="saveHotel(event)">
+            <div class="form-group">
+              <label for="hotel-name">飯店名稱</label>
+              <input type="text" id="hotel-name" placeholder="例如：COEX InterContinental Seoul">
+            </div>
+            <div class="form-group">
+              <label for="hotel-address">飯店地址</label>
+              <input type="text" id="hotel-address" placeholder="飯店英文/韓文地址">
+            </div>
+            <div class="form-group">
+              <label for="hotel-booking-ref">預訂編號 / 聯絡電話</label>
+              <input type="text" id="hotel-booking-ref" placeholder="Booking Ref / Phone">
+            </div>
+            <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-floppy-disk"></i> 儲存住宿資訊</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: CHECKLIST -->
+    <section id="tab-checklist" class="tab-content">
+      <div class="card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-square-check"></i> 行前準備與待辦事項
+        </h2>
+        
+        <!-- Checklist Progress -->
+        <div class="progress-container">
+          <div class="progress-header">
+            <span>任務完成進度</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-bar-wrapper">
+            <div id="progress-bar" class="progress-bar-fill"></div>
+          </div>
+        </div>
+
+        <!-- Checklist List -->
+        <div class="checklist-container" id="checklist-items-wrapper">
+          <!-- items rendered dynamically by JS -->
+        </div>
+        
+        <div style="margin-top: 25px; display: flex; gap: 10px;">
+          <input type="text" id="new-todo-text" placeholder="新增自訂待辦事項..." style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none;">
+          <button class="btn btn-primary" onclick="addCustomTodo()"><i class="fa-solid fa-plus"></i> 新增</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: SEOUL TRAVEL GUIDE -->
+    <section id="tab-guide" class="tab-content">
+      <div class="grid-2col">
+        <!-- Essential Apps & Guide Cards -->
+        <div class="card card-accent-purple">
+          <h2 class="card-title">
+            <i class="fa-solid fa-mobile-screen-button"></i> 韓國自助旅行必備 App
+          </h2>
+          <div class="guide-accordion">
+            <div class="guide-section">
+              <h3><i class="fa-solid fa-map"></i> Naver Map / KakaoMap</h3>
+              <p>在韓國，Google Maps 的導航功能受到限制。請務必安裝 Naver Map 或 KakaoMap，這兩款支援繁體中文/英文，查路線、公車地鐵極度精準。</p>
+            </div>
+            <div class="guide-section">
+              <h3><i class="fa-solid fa-taxi"></i> Kakao T</h3>
+              <p>韓國的計程車預約軟體，支援綁定海外信用卡，不怕語言不通與司機溝通，直接輸入目的地，系統會預估車資並自動扣款。</p>
+            </div>
+            <div class="guide-section">
+              <h3><i class="fa-solid fa-language"></i> Papago</h3>
+              <p>Naver 開發的韓語翻譯神器，語音與拍照翻譯精準度比 Google 翻譯高出許多，特別是菜單與路標翻譯。</p>
+            </div>
+            <div class="guide-section">
+              <h3><i class="fa-solid fa-wallet"></i> T-money 交通卡</h3>
+              <p>抵達機場後可直接在便利商店（CU, GS25）購買 T-money 卡並加值（需現金韓元），用於搭乘地鐵、公車、計程車。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Korean Phrases & COEX Info -->
+        <div class="card card-accent-cyan">
+          <h2 class="card-title">
+            <i class="fa-solid fa-location-dot"></i> 研討會場地 COEX Center 資訊
+          </h2>
+          <div style="font-size: 0.95rem; margin-bottom: 20px;">
+            <p style="margin-bottom: 10px;">
+              <strong>📍 地址：</strong> 韓國首爾特別市江南區永東大路 513 (COEX)
+            </p>
+            <p style="margin-bottom: 10px;">
+              <strong>🚇 地鐵交通：</strong>
+              <br>1. 首爾地鐵 <strong>2 號線</strong> - 三成站 (Samseong) 5、6號出口直通 COEX Mall。
+              <br>2. 首爾地鐵 <strong>9 號線</strong> - 奉恩寺站 (Bongeunsa) 7號出口直通。
+            </p>
+            <p>
+              <strong>🛍️ 周邊環境：</strong> COEX 內部有全亞洲最大的地下購物中心 Starfield COEX Mall，包含著名的「星空圖書館」，餐飲選擇極多，生活機能非常發達。
+            </p>
+          </div>
+
+          <h2 class="card-title">
+            <i class="fa-solid fa-comments"></i> 實用旅行韓語
+          </h2>
+          <div class="phrase-grid">
+            <div class="phrase-card">
+              <div class="phrase-kr">안녕하세요</div>
+              <div class="phrase-rom">An-nyeong-ha-se-yo</div>
+              <div class="phrase-en">您好</div>
+            </div>
+            <div class="phrase-card">
+              <div class="phrase-kr">감사합니다</div>
+              <div class="phrase-rom">Gam-sa-ham-ni-da</div>
+              <div class="phrase-en">謝謝</div>
+            </div>
+            <div class="phrase-card">
+              <div class="phrase-kr">여기로 가주세요</div>
+              <div class="phrase-rom">Yeo-gi-ro ga-ju-se-yo</div>
+              <div class="phrase-en">請帶我去這裡 (對司機說)</div>
+            </div>
+            <div class="phrase-card">
+              <div class="phrase-kr">이거 얼마예요?</div>
+              <div class="phrase-rom">I-geo ol-ma-ye-yo?</div>
+              <div class="phrase-en">這個多少錢？</div>
+            </div>
+            <div class="phrase-card">
+              <div class="phrase-kr">화장실 어디예요?</div>
+              <div class="phrase-rom">Hwa-jang-sil eo-di-ye-yo?</div>
+              <div class="phrase-en">廁所在哪裡？</div>
+            </div>
+            <div class="phrase-card">
+              <div class="phrase-kr">카드 돼요?</div>
+              <div class="phrase-rom">Ka-deu dwae-yo?</div>
+              <div class="phrase-en">可以刷卡嗎？</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
