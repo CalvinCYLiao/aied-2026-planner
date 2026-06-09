@@ -4171,9 +4171,9 @@ const sessionDetailsData = {
         "authors": "Chen Hu, Hui-Chun Hung, Chih-Hao Hsu, Shu-I Fang, Chen-Chung Liu, Chia-Hui Chang and Ying-Tien Wu",
         "title": "An ORID-Structured GenAI Reading Companion Integrating Structured Book Chat and Virtual Labs for Science Reading",
         "topic": "Generative AI & LLMs",
-        "country": "US",
-        "country_name": "美國 (USA)",
-        "institution": "Johns Hopkins University"
+        "country": "TW",
+        "country_name": "台灣 (Taiwan)",
+        "institution": "National Central University"
       }
     ]
   },
